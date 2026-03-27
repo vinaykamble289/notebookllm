@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+        .test-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 4px;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #555;
+            font-size: 18px;
+        }
+        button {
+            background: #0070f3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #0051cc;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 API Connection Test</h1>
+        
+        <div class="test-section">
+            <h2>1. Health Check</h2>
+            <p>Tests if the backend server is running and responding.</p>
+            <button onclick="testHealth()">Test Health Endpoint</button>
+            <div id="health-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>2. Documents List</h2>
+            <p>Tests if the documents API endpoint is accessible.</p>
+            <button onclick="testDocuments()">Test Documents Endpoint</button>
+            <div id="documents-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>3. System Stats</h2>
+            <p>Tests if the admin stats endpoint is working.</p>
+            <button onclick="testStats()">Test Stats Endpoint</button>
+            <div id="stats-result"></div>
+        </div>
+
+        <div class="test-section">
+            <h2>4. CORS Test</h2>
+            <p>Tests if CORS is properly configured for cross-origin requests.</p>
+            <button onclick="testCORS()">Test CORS</button>
+            <div id="cors-result"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8001';
+
+        function showResult(elementId, message, type = 'info') {
+            const element = document.getElementById(elementId);
+            element.className = `result ${type}`;
+            element.textContent = message;
+        }
+
+        function showLoading(elementId) {
+            const element = document.getElementById(elementId);
+            element.className = 'result loading';
+            element.textContent = 'Testing...';
+        }
+
+        async function testHealth() {
+            showLoading('health-result');
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('health-result', 
+                        `✅ SUCCESS!\n\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`,
+                        'success'
+                    );
+                } else {
+                    showResult('health-result', 
+                        `❌ FAILED\n\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('health-result', 
+                    `❌ ERROR\n\n${error.message}\n\nMake sure the backend is running on port 8001.`,
+                    'error'
+                );
+            }
+        }
+
+        async function testDocuments() {
+            showLoading('documents-result');
+            try {
+                const response = await fetch(`${API_URL}/api/v1/admin/documents?page=1&per_page=10`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('documents-result', 
+                        `✅ SUCCESS!\n\nStatus: ${response.status}\nDocuments found: ${data.total}\nResponse:\n${JSON.stringify(data, null, 2)}`,
+                        'success'
+                    );
+                } else {
+                    showResult('documents-result', 
+                        `❌ FAILED\n\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('documents-result', 
+                    `❌ ERROR\n\n${error.message}\n\nMake sure the backend is running on port 8001.`,
+                    'error'
+                );
+            }
+        }
+
+        async function testStats() {
+            showLoading('stats-result');
+            try {
+                const response = await fetch(`${API_URL}/api/v1/admin/stats`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    showResult('stats-result', 
+                        `✅ SUCCESS!\n\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`,
+                        'success'
+                    );
+                } else {
+                    showResult('stats-result', 
+                        `❌ FAILED\n\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('stats-result', 
+                    `❌ ERROR\n\n${error.message}\n\nMake sure the backend is running on port 8001.`,
+                    'error'
+                );
+            }
+        }
+
+        async function testCORS() {
+            showLoading('cors-result');
+            try {
+                const response = await fetch(`${API_URL}/health`, {
+                    method: 'GET',
+                    headers: {
+                        'Origin': 'http://localhost:3000'
+                    }
+                });
+                
+                const corsHeader = response.headers.get('Access-Control-Allow-Origin');
+                const data = await response.json();
+                
+                if (response.ok && corsHeader) {
+                    showResult('cors-result', 
+                        `✅ CORS CONFIGURED!\n\nAccess-Control-Allow-Origin: ${corsHeader}\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`,
+                        'success'
+                    );
+                } else if (response.ok && !corsHeader) {
+                    showResult('cors-result', 
+                        `⚠️ WARNING\n\nServer responded but no CORS headers found.\nThis might cause issues with the frontend.\n\nStatus: ${response.status}`,
+                        'error'
+                    );
+                } else {
+                    showResult('cors-result', 
+                        `❌ FAILED\n\nStatus: ${response.status}\nResponse:\n${JSON.stringify(data, null, 2)}`,
+                        'error'
+                    );
+                }
+            } catch (error) {
+                showResult('cors-result', 
+                    `❌ ERROR\n\n${error.message}\n\nThis could be a CORS issue or the backend is not running.`,
+                    'error'
+                );
+            }
+        }
+
+        // Auto-run health check on load
+        window.addEventListener('load', () => {
+            setTimeout(testHealth, 500);
+        });
+    </script>
+</body>
+</html>
