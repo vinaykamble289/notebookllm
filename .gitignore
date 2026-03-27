@@ -7,7 +7,7 @@ node_modules/
 .next/
 out/
 build/
-
+backend/
 # Environment variables
 .env
 .env.local

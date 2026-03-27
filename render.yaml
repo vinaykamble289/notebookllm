@@ -1,0 +1,74 @@
+# Exported from Render on 2026-03-27T16:43:24Z
+version: "1"
+projects:
+- name: gurukul
+  environments:
+  - name: Production
+    services:
+    - type: web
+      name: notebookllm
+      runtime: python
+      repo: https://github.com/vinaykamble289/notebookllm
+      plan: free
+      envVars:
+      - key: ENABLE_REASONING
+        sync: false
+      - key: REASONING_TEMPERATURE
+        sync: false
+      - key: REASONING_MAX_TOKENS
+        sync: false
+      - key: REASONING_MODEL
+        sync: false
+      - key: OPENROUTER_APP_NAME
+        sync: false
+      - key: OPENROUTER_BASE_URL
+        sync: false
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: CHUNK_OVERLAP
+        sync: false
+      - key: CHUNK_SIZE
+        sync: false
+      - key: FAISS_INDEX_NAME
+        sync: false
+      - key: MAX_TOKENS
+        sync: false
+      - key: LLM_MODEL
+        sync: false
+      - key: EMBEDDING_MODEL
+        sync: false
+      - key: EMAIL_FROM
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: VECTOR_STORE_DIR
+        sync: false
+      - key: UPLOAD_DIR
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        sync: false
+      - key: ALGORITHM
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: DEBUG
+        sync: false
+      - key: HOST
+        sync: false
+      - key: PORT
+        sync: false
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      region: singapore
+      buildCommand: pip install -r requirements.txt
+      startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+      autoDeployTrigger: commit
+      rootDir: backend
