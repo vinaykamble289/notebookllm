@@ -28,6 +28,7 @@ requests==2.31.0
 
 # Email
 aiosmtplib==3.0.1
+pydantic[email]
 
 # Database
 sqlalchemy==2.0.23
